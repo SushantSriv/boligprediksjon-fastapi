@@ -4,12 +4,13 @@ from pydantic import BaseModel
 import mlflow.sklearn
 import numpy as np
 import pandas as pd
+import joblib
+
 
 # FastAPI-app
 app = FastAPI()
 
-# ✅ Last inn MLflow-modellen (fra lokal sti — tilpass ved behov)
-model = mlflow.sklearn.load_model("mlruns/0/2731891e37064427812816bb270bd2b6/artifacts/model")
+model = joblib.load("model.pkl")
 
 # 📥 Input-modell
 class PredictionInput(BaseModel):
