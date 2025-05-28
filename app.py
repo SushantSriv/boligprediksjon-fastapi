@@ -5,11 +5,24 @@ import mlflow.sklearn
 import numpy as np
 import pandas as pd
 import joblib
+import os
+import joblib
+import requests
 
 
 # FastAPI-app
 app = FastAPI()
 
+MODEL_URL = "https://drive.google.com/uc?export=download&id=1HN502_G3HIxRmquFAvjGyCEj4R1Inn5X"
+
+# Last ned modellen hvis den ikke finnes
+if not os.path.exists("model.pkl"):
+    print("📥 Laster ned model.pkl fra Google Drive...")
+    r = requests.get(MODEL_URL)
+    with open("model.pkl", "wb") as f:
+        f.write(r.content)
+
+# Last inn modellen
 model = joblib.load("model.pkl")
 
 # 📥 Input-modell
