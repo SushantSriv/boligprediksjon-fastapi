@@ -1,102 +1,144 @@
 
-# 🏠 Byggekostnadsprediksjon – FastAPI + React
+# 🏠 Byggekostnadsprediksjon – FastAPI + React + Docker
 
-Et komplett fullstack-prosjekt som predikerer byggekostnadsindeks i Norge.  
-Bygger på data fra [SSB](https://data.ssb.no/api/v0/dataset/1056?lang=en), og tilbyr et REST API med FastAPI + en responsiv frontend bygget i React.
+Dette prosjektet er et komplett fullstack-oppsett for maskinlæring og webutvikling, som predikerer byggekostnadsindeks i Norge basert på data fra Statistisk sentralbyrå (SSB). Det gir både et REST API (FastAPI) og en brukervennlig frontend (React), og alt kan kjøres lokalt eller containeriseres med Docker.
 
 ---
 
-## 📁 Prosjektstruktur
+## 🎯 Prosjektmål
+
+Dette prosjektet ble laget for å:
+- Utforske hvordan man trener og bruker en ML-modell for prediksjon
+- Lære å bygge og eksponere en ML-modell gjennom et REST API (FastAPI)
+- Utvikle en interaktiv frontend med React
+- Bruke Docker for enkel distribusjon og lokal kjøring
+- Forstå hvordan backend og frontend jobber sammen
+- Koble ML, API og UI i ett prosjekt – et komplett dataprodukt
+
+---
+
+## 🧱 Teknologistack
+
+| Komponent       | Teknologi             |
+|----------------|------------------------|
+| ML-modell       | scikit-learn (RandomForest) |
+| Modell-lagring  | joblib                 |
+| Backend API     | FastAPI                |
+| Frontend UI     | React                  |
+| Data            | SSB (API)              |
+| Deploy (API)    | Render.com             |
+| Frontend (dev)  | CodeSandbox / Vercel   |
+| Containerisering| Docker                 |
+
+---
+
+## 🧠 Hva gjør appen?
+
+Brukeren kan:
+- Velge et år, måned og type arbeid (f.eks. "12 Carpentry, total")
+- Trykke "Forutsi indeks"
+- Motta en byggekostnadsindeks som viser hvor mye kostnaden har endret seg relativt til 2015
+
+🟢 En indeks på 140 betyr en 40 % økning i byggekostnader sammenlignet med 2015 (2015 = 100).
+
+---
+
+## 🗂️ Prosjektstruktur
 
 ```
 .
 ├── app.py                   # FastAPI-backend
 ├── requirements.txt        # Python-avhengigheter
-├── Dockerfile              # For containerisering
-├── src/                    # React-app (JS + CSS)
-│   ├── App.js
-│   ├── styles.css
-│   └── ...
-├── public/                 # HTML for React
+├── Dockerfile              # Lager et komplett backend-miljø
+├── src/                    # React frontend
+│   ├── App.js              # Hovedkomponenten
+│   └── styles.css          # Brukergrensesnittstil
+├── public/                 # HTML-inngangspunkt for React
 │   └── index.html
-├── package.json            # React dependencies
+├── package.json            # React-avhengigheter
 └── README.md
 ```
 
 ---
 
-## 🚀 Teknologistack
+## ⚙️ Hvordan kjøre lokalt
 
-| Komponent   | Teknologi             |
-|------------|------------------------|
-| Backend    | FastAPI (Python)       |
-| Modell     | scikit-learn           |
-| Frontend   | React (JS)             |
-| Hosting API| Render.com             |
-| Frontend Dev| CodeSandbox / Vercel  |
-| Data       | SSB (Statistisk sentralbyrå) |
-
----
-
-## 🎬 Live demo
-
-- 🔗 React UI (CodeSandbox):  
-  👉 [https://9qndjl.csb.app](https://9qndjl.csb.app)
-
-- 🔗 Swagger UI (API – kan være blokkert i firma):  
-  👉 https://boligprediksjon-fastapi.onrender.com/docs
-
----
-
-## 📦 Hvordan kjøre lokalt
-
-### 🐍 Backend (FastAPI):
+### 🐍 1. Kjør backend (FastAPI)
 
 ```bash
 pip install -r requirements.txt
 uvicorn app:app --reload
 ```
 
-📍 Åpne Swagger-dokumentasjon:  
-[http://localhost:8000/docs](http://localhost:8000/docs)
+Åpne API-dokumentasjon: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-### 🌐 Frontend (React):
+### 🌐 2. Kjør frontend (React)
 
 ```bash
 npm install
 npm start
 ```
 
-📍 Appen kjører på:  
-[http://localhost:3000](http://localhost:3000)
+Frontend åpnes her: [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 🔮 Hva gjør appen?
+### 🐳 3. Kjør hele backend med Docker
 
-Brukeren velger:
-- År (`year`)
-- Måned (`month_num`)
-- Type arbeid (`type_of_employment`)
+Bygg og start backend via Docker:
 
-Appen sender en POST til API-et som svarer med:
+```bash
+docker build -t bolig-api .
+docker run -p 8000:8000 bolig-api
+```
+
+Dette starter FastAPI og eksponerer `/predict`-endepunktet.
+
+---
+
+## 🔗 Live demo
+
+- 🧪 API-dokumentasjon:  
+  `https://boligprediksjon-fastapi.onrender.com/docs`
+
+- 🌐 React UI (hostet via CodeSandbox):  
+  [https://9qndjl.csb.app](https://9qndjl.csb.app)
+
+---
+
+## 📦 Eksempel på API-kall
 
 ```json
-{ "predicted_index": 127.9 }
+POST /predict
+{
+  "year": 2024,
+  "month_num": 5,
+  "type_of_employment": "12 Carpentry, total"
+}
+```
+
+Respons:
+
+```json
+{
+  "predicted_index": 129.83
+}
 ```
 
 ---
 
-## ℹ️ Hva betyr indeksen?
+## ✨ Hva jeg har lært
 
-> Indeksen viser hvor mye byggekostnadene har økt siden 2015, der 2015 = 100.  
-> En indeks på 130 betyr 30 % økning i kostnad.
+- Hvordan hente og bearbeide offentlig statistikk fra SSB
+- Hvordan trene og bruke ML-modeller med scikit-learn
+- Hvordan eksponere modeller gjennom FastAPI
+- Hvordan bruke joblib for modell-lagring
+- Hvordan utvikle og style et React-grensesnitt
+- Hvordan bygge og kjøre backend i en Docker-container
+- Hvordan koble frontend og backend med fetch() og CORS
 
 ---
 
-## 📬 Kontakt
 
-Laget av [Sushant Srivastava](https://github.com/SushantSriv)  
-Bidrag og tilbakemeldinger er velkomne!
