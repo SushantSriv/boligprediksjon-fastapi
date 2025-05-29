@@ -8,10 +8,18 @@ import joblib
 import os
 import joblib
 import requests
+from fastapi.middleware.cors import CORSMiddleware
 
-
-# FastAPI-app
 app = FastAPI()
+
+# 👇 Legg til dette før du definerer endepunkter
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # eller sett eksakt URL til React-app
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 MODEL_URL = "https://drive.google.com/uc?export=download&id=1HN502_G3HIxRmquFAvjGyCEj4R1Inn5X"
 
